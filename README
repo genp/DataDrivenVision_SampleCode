@@ -1,0 +1,26 @@
+###
+This is an example of how to use a pretrained model to extract CNN features from images.
+To begin this process, please download and install caffe, along with the typical python libraries numpy, sklearn, and scipy.
+I recommend using virtualenv to manage the python environment.
+
+Once caffe is installed, download the pretrained model you would like to use. In this example I will use the HybridCNN model introduced in the Places dataset paper. 
+###
+
+# model setup - this will have different names depending on the model you download. It could be deploy.prototxt or solver.prototxt
+MODEL_FILE = '/home/gen/caffe/models/hybridCNN/hybridCNN_deploy_FC7.prototxt'
+
+# pretrained network weights - this file will be called somthing.caffemodel
+PRETRAINED = '/home/gen/caffe/models/hybridCNN/hybridCNN_iter_700000.caffemodel'
+
+###
+
+To extract features for images, use the sample code in create_features.py. Below is an example of command line execution to extract the HybridCNN fc7 layer feature for one test image.
+
+The command line arguments for create_features.py allow the user to pass several images in for feature calculation. This may be desirable as loading the caffe network is usually the time consuming aspect. create_features.py contains an option on line 102 to use or not use the gpu. Executing this script for many files serially on a gpu is probably the fastest way to use it. You may also choose to use the Brown CS compute grid to parallelize feature extraction over hundreds of CPUs. Please ask about grid usage best practices if you have never used the grid before.
+
+You are also encouraged to alter this code to extract features in a sliding window fashion or from a pre-determined region of interest. Note that this will be much slower than training a caffe network to identify regions of interest, however it might be more straightforward from a coding standpoint. 
+
+###
+
+~/DataDrivenVision_SampleCode $ ./create_features.py -i ~/scratch/test.png --feat_type hybridCNN --model_file /home/gen/caffe/models/hybridCNN/hybridCNN_deploy_FC7.prototxt --pretrained /home/gen/caffe/m
+odels/hybridCNN/hybridCNN_iter_700000.caffemodel --layer_name fc7 --save_dir ~/scratch
